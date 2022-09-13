@@ -1,3 +1,4 @@
+using System;
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
@@ -5,9 +6,13 @@ using UnityEngine.InputSystem;
 
 public class PlayerMovement : MonoBehaviour
 {
-    [Header("Variables")]
+    [Header("References")]
     [SerializeField] float speed;
+    [SerializeField] float range;
+    [SerializeField] GameObject Gun;
+    [SerializeField] Camera cam;
     [Header("Component References")]
+
     Animator animator_C;
     SpriteRenderer spriteRenderer_C;
     Rigidbody2D rb2D_C;
@@ -15,6 +20,7 @@ public class PlayerMovement : MonoBehaviour
     PlayerInput playerInput; // a class not a component
     private void Awake()
     {
+
         animator_C = GetComponent<Animator>();
         playerInput = new PlayerInput();
         spriteRenderer_C = GetComponent<SpriteRenderer>();
@@ -35,12 +41,28 @@ public class PlayerMovement : MonoBehaviour
     {
         playerInput.Player.Hit.performed += OnHit;
         playerInput.Player.Hit.canceled += OnUnHit;
+        playerInput.Player.Shoot.performed += OnShoot;
     }
     private void OnDisable()
     {
         playerInput.Player.Hit.performed -= OnHit;
         playerInput.Player.Hit.canceled -= OnUnHit;
+        playerInput.Player.Shoot.performed -= OnShoot;
     }
+
+    private void OnShoot(InputAction.CallbackContext obj)
+    {
+        RaycastHit2D raycastHit2D = Physics2D.Raycast(Gun.transform.position, cam.ScreenToWorldPoint(Mouse.current.position.ReadValue()), range); // store info about target
+        Debug.DrawLine(Gun.transform.position + new Vector3(0, 0, 200), cam.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Color.white, 0.1f);
+        Debug.Log("ff");
+        /*
+        if (raycastHit2D.transform.gameObject.layer == LayerMask.GetMask("Enemy"))
+        {
+            // Destroy enemy
+        }
+        */
+    }
+
     private void OnHit(InputAction.CallbackContext context)
     {
         animator_C.SetBool("hit", true);
@@ -62,7 +84,7 @@ public class PlayerMovement : MonoBehaviour
         if (isRunning)
         {
             animator_C.SetBool("isRunning", true);
-            transform.localScale = new Vector3(Mathf.Sign(velocity.x), 1, 1);
+            transform.rotation = (Quaternion.Euler(new Vector3(0, Mathf.Sign(velocity.x) == 1 ? 0 : 180, 0)));
         }
         else
         {

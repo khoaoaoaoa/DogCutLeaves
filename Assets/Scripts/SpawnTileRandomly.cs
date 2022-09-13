@@ -34,14 +34,16 @@ public class SpawnTileRandomly : MonoBehaviour
         }
         for (int i = 0; i < numberOfTiles; i++)
         {
-            var positionToSpawn = new Vector3(Random.Range(tileMap_C.cellBounds.xMin, tileMap_C.cellBounds.xMax), Random.Range(tileMap_C.cellBounds.yMin, tileMap_C.cellBounds.yMax), tileMap_C.transform.position.z);
-            foreach (var Vector in xyPositionOfExistedTile)
+            var positionToSpawn = new Vector3(Random.Range(tileMap_C.cellBounds.xMin + 2, tileMap_C.cellBounds.xMax - 2), Random.Range(tileMap_C.cellBounds.yMin + 2, tileMap_C.cellBounds.yMax - 2), tileMap_C.transform.position.z);
+            for (int z = 0; z < xyPositionOfExistedTile.Count; z++)
             {
-                if (positionToSpawn == Vector)
+                if (positionToSpawn == xyPositionOfExistedTile[z])
                 {
-                    positionToSpawn = new Vector3(Random.Range(tileMap_C.cellBounds.xMin, tileMap_C.cellBounds.xMax), Random.Range(tileMap_C.cellBounds.yMin, tileMap_C.cellBounds.yMax), tileMap_C.transform.position.z);
+                    positionToSpawn = new Vector3(Random.Range(tileMap_C.cellBounds.xMin + 2, tileMap_C.cellBounds.xMax - 2), Random.Range(tileMap_C.cellBounds.yMin + 2, tileMap_C.cellBounds.yMax - 2), tileMap_C.transform.position.z);
+                    z = 0;
                 }
             }
+            xyPositionOfExistedTile.Add(positionToSpawn);
             tileMap_C.SetTile(tileMap_C.WorldToCell(positionToSpawn), GameAssets.Instance.tileToSpawn /*Whatever tile you like*/ );
         }
     }
