@@ -52,15 +52,20 @@ public class PlayerMovement : MonoBehaviour
 
     private void OnShoot(InputAction.CallbackContext obj)
     {
-        RaycastHit2D raycastHit2D = Physics2D.Raycast(Gun.transform.position, cam.ScreenToWorldPoint(Mouse.current.position.ReadValue()), range); // store info about target
+        RaycastHit2D raycastHit2D = Physics2D.Raycast(Gun.transform.position, cam.ScreenToWorldPoint(Mouse.current.position.ReadValue()).normalized, range, LayerMask.GetMask("Enemy")); // store info about target
         Debug.DrawLine(Gun.transform.position + new Vector3(0, 0, 200), cam.ScreenToWorldPoint(Mouse.current.position.ReadValue()), Color.white, 0.1f);
         Debug.Log("ff");
-        /*
-        if (raycastHit2D.transform.gameObject.layer == LayerMask.GetMask("Enemy"))
+
+        if (raycastHit2D)
         {
-            // Destroy enemy
+            if (raycastHit2D.transform.gameObject.layer.Equals(LayerMask.NameToLayer("Enemy")))
+            {
+                // Destroy enemy
+                Destroy(raycastHit2D.transform.gameObject);
+            }
+
         }
-        */
+
     }
 
     private void OnHit(InputAction.CallbackContext context)

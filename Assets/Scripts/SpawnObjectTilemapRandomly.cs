@@ -1,23 +1,21 @@
-
 using System.Collections;
 using System.Collections.Generic;
 using UnityEngine;
 using UnityEngine.Tilemaps;
-public class SpawnTileRandomly : MonoBehaviour
+
+public class SpawnObjectTilemapRandomly : MonoBehaviour
 {
-    [SerializeField] Tile TileToSpawn;
+    [SerializeField] GameObject GOToSpawn;
     [Tooltip("Only the limit, not the Tilemap which the Tiles are spawned on")]
     [SerializeField] GameObject WhichObjToGetCellBounds; // the limit of the tile map
-    [Tooltip("The Tilemap which the Tiles are spawned on")]
-    [SerializeField] GameObject TilemapToSpawnOn; // the limit of the tile map
-    [SerializeField] int numberOfTiles;
+    [SerializeField] int numberOfObjects;
     Tilemap tileMap_C;
 
 
     // Start is called before the first frame update
     void Start()
     {
-        GenerateRandomTile(numberOfTiles);
+        GenerateRandomTile(numberOfObjects);
     }
     void GenerateRandomTile(int numberOfTiles)
     {
@@ -49,12 +47,15 @@ public class SpawnTileRandomly : MonoBehaviour
                     z = 0;
                 }
             }
-            xyPositionOfExistedTile.Add(positionToSpawn);
 
-            TilemapToSpawnOn.GetComponent<Tilemap>().SetTile(tileMap_C.WorldToCell(positionToSpawn), TileToSpawn /*Whatever tile you like*/ );
+            xyPositionOfExistedTile.Add(positionToSpawn);
+            Vector3 positionToSpawnWorldToCell = new Vector3(tileMap_C.WorldToCell(positionToSpawn).x, tileMap_C.WorldToCell(positionToSpawn).y, tileMap_C.WorldToCell(positionToSpawn).z);
+            Instantiate(GOToSpawn, positionToSpawnWorldToCell, Quaternion.identity);
 
 
         }
     }
 }
+
+
 
